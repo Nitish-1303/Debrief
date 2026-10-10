@@ -23,7 +23,7 @@ never leaves the paste.
 
 - Next.js (App Router, TypeScript) + Tailwind
 - `POST /api/extract`: `{ transcript }` → extraction → verifier → `tasks[]`
-- Gemini (`gemini-2.5-flash`) via its OpenAI-compatible endpoint
+- Gemini (`gemini-3.8-flash`) via its OpenAI-compatible endpoint
 - Neatlogs tracing on every run (extract call, verifier call, JSON validation)
 
 ## Local setup
