@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #faf6ee;
+  --color-paper: #fffdf8;
+  --color-ink: #211c15;
+  --color-ink-soft: #5c5347;
+  --color-rule: #e3d9c8;
+  --color-rule-strong: #cdbfa8;
+  --color-accent: #9a3b2c;
+  --color-verified: #3f6b4e;
+  --color-missing: #8a7f6d;
+
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-newsreader), Georgia, "Times New Roman", serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+::selection {
+  background: #f0d9a8;
+  color: var(--color-ink);
+}
+
+/* Transcript sentence highlight when a quote is clicked. */
+mark.quote-hit {
+  background: #f2dca0;
+  color: var(--color-ink);
+  padding: 0.05em 0.1em;
+  border-radius: 2px;
+}
