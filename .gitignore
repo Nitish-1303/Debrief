@@ -19,3 +19,6 @@ next-env.d.ts
 # misc
 *.log
 .DS_Store
+
+# next dev auto-generates this agent-rules file; keep it out of the repo.
+AGENTS.md
