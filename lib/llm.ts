@@ -6,7 +6,7 @@ import { wrapOpenAI } from "neatlogs";
 const GEMINI_BASE_URL =
   "https://generativelanguage.googleapis.com/v1beta/openai/";
 
-export const MODEL = "gemini-2.5-flash";
+export const MODEL = "gemini-3.8-flash";
 
 let client: OpenAI | null = null;
 
