@@ -6,8 +6,9 @@ const SYSTEM_PROMPT = `You are a strict verifier. For each item you receive a "t
 
 Be strict. If the quote is unrelated to the task, contradicts it, or does not actually describe this commitment, it does NOT support the task.
 
-Return STRICT JSON only: {"results":[{"index":number,"supportsTask":boolean,"reason":string}]}
+Return STRICT JSON only: {"results":[{"index":number,"supportsTask":boolean,"confidence":number,"reason":string}]}
 - One entry per input item, in the same order, using the item's index.
+- "confidence" is 0-100: how confident you are that the quote supports the task.
 - Keep "reason" under 12 words.`;
 
 /** Normalize for a tolerant-but-honest verbatim check (smart quotes, whitespace). */
@@ -22,17 +23,30 @@ function normalize(s: string): string {
 interface VerifierResult {
   index?: unknown;
   supportsTask?: unknown;
+  confidence?: unknown;
   reason?: unknown;
 }
 
-function parseVerifier(rawContent: string, count: number): Map<number, { supportsTask: boolean; reason: string }> {
+function clampConfidence(value: unknown): number {
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+function parseVerifier(
+  rawContent: string,
+  count: number
+): Map<number, { supportsTask: boolean; confidence: number; reason: string }> {
   const stripped = rawContent
     .replace(/^\s*```(?:json)?/i, "")
     .replace(/```\s*$/, "")
     .trim();
 
   const parsed = JSON.parse(stripped) as { results?: VerifierResult[] };
-  const map = new Map<number, { supportsTask: boolean; reason: string }>();
+  const map = new Map<
+    number,
+    { supportsTask: boolean; confidence: number; reason: string }
+  >();
   if (!parsed || !Array.isArray(parsed.results)) return map;
 
   for (const r of parsed.results) {
@@ -40,6 +54,7 @@ function parseVerifier(rawContent: string, count: number): Map<number, { support
     if (!Number.isInteger(index) || index < 0 || index >= count) continue;
     map.set(index, {
       supportsTask: r.supportsTask === true,
+      confidence: clampConfidence(r.confidence),
       reason: typeof r.reason === "string" ? r.reason.trim() : "",
     });
   }
@@ -91,6 +106,8 @@ export async function verifyTasks(
         const verdict = verdicts.get(i);
         const supportsTask = verdict?.supportsTask ?? false;
         const verified = quoteFound && supportsTask;
+        // No verbatim match → the quote is fabricated; confidence is 0.
+        const confidence = quoteFound ? verdict?.confidence ?? 0 : 0;
 
         let verifyReason: string;
         if (!quoteFound) {
@@ -101,7 +118,7 @@ export async function verifyTasks(
           verifyReason = "Quote found verbatim and supports the task.";
         }
 
-        return { ...t, verified, verifyReason };
+        return { ...t, verified, confidence, verifyReason };
       });
     }
   );

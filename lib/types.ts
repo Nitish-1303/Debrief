@@ -21,6 +21,8 @@ export interface Task {
    * - false : failed verification ("unverified")
    */
   verified: boolean;
+  /** Verifier confidence that the quote supports the task, 0-100. */
+  confidence: number;
   /** Short human-readable reason from the verifier. */
   verifyReason: string;
 }

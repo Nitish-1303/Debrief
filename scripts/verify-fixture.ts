@@ -22,6 +22,7 @@ async function main() {
       deadline: "tomorrow",
       deadlineStatus: "stated",
       verified: true,
+      confidence: 0,
       verifyReason: "",
     },
     {
@@ -33,6 +34,7 @@ async function main() {
       deadline: "Monday",
       deadlineStatus: "stated",
       verified: true,
+      confidence: 0,
       verifyReason: "",
     },
   ];

@@ -61,6 +61,7 @@ function validateExtraction(rawContent: string): Task[] {
       deadlineStatus: deadline ? "stated" : "missing",
       // Verifier pass fills these in; defaults are overwritten there.
       verified: true,
+      confidence: 0,
       verifyReason: "",
     });
   }
