@@ -22,3 +22,6 @@ next-env.d.ts
 
 # next dev auto-generates this agent-rules file; keep it out of the repo.
 AGENTS.md
+
+# typescript incremental build cache
+*.tsbuildinfo
