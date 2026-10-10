@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { span } from "neatlogs";
 import { extractTasks } from "@/lib/extract";
+import { verifyTasks } from "@/lib/verify";
 
 // Node runtime: the OpenAI + Neatlogs SDKs need Node APIs (not Edge).
 export const runtime = "nodejs";
@@ -14,7 +15,9 @@ const MAX_TRANSCRIPT_CHARS = 20000;
 const runWorkflow = span(
   { kind: "WORKFLOW", name: "debrief-extract" },
   async (transcript: string) => {
-    return await extractTasks(transcript);
+    const extracted = await extractTasks(transcript);
+    // Second pass: verify each quote verbatim + supports its task.
+    return await verifyTasks(transcript, extracted);
   }
 );
 

@@ -113,7 +113,22 @@ function ResultsTable({ tasks }: { tasks: Task[] }) {
         <tbody>
           {tasks.map((t, i) => (
             <tr key={i} className="border-b border-rule align-top">
-              <td className="py-3 pr-4">{t.task}</td>
+              <td className="py-3 pr-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span>{t.task}</span>
+                  {!t.verified && (
+                    <span
+                      title={t.verifyReason}
+                      className="border border-accent px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-accent"
+                    >
+                      Unverified
+                    </span>
+                  )}
+                </div>
+                {!t.verified && t.verifyReason && (
+                  <p className="mt-1 text-xs text-accent/80">{t.verifyReason}</p>
+                )}
+              </td>
               <td className="py-3 pr-4">
                 <FieldCell value={t.owner} status={t.ownerStatus} />
               </td>
