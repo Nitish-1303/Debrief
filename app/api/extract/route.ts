@@ -3,6 +3,7 @@ import { span, setTraceOutput } from "neatlogs";
 import { extractTasks } from "@/lib/extract";
 import { verifyTasks } from "@/lib/verify";
 import { flushIfServerless } from "@/lib/flush";
+import { toUserError } from "@/lib/errors";
 
 // Node runtime: the OpenAI + Neatlogs SDKs need Node APIs (not Edge).
 export const runtime = "nodejs";
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("extract failed:", err);
     await flushIfServerless();
-    const message = err instanceof Error ? err.message : "Extraction failed.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const { status, message } = toUserError(err);
+    return NextResponse.json({ error: message }, { status });
   }
 }

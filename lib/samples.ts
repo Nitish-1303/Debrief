@@ -1,7 +1,6 @@
-// Two built-in sample transcripts for the demo: one English, one Hinglish-mixed.
-// Both are fictional and non-sensitive. Each has a mix of commitments with
-// stated owners/deadlines and some deliberately missing — to show the honest
-// "stated / missing" fields and the verifier at work.
+// Built-in sample transcripts for the demo. All fictional and non-sensitive.
+// They deliberately mix stated owners/deadlines with missing ones, so the
+// honest "stated / missing" fields and the verifier are both visible.
 
 export interface Sample {
   label: string;
@@ -20,10 +19,19 @@ Arjun: Great. We should also get the pricing page reviewed, but we'll figure out
   },
   {
     label: "Hinglish sample",
-    text: `Rohan: Chalo shuru karte hain. Main kal tak client ko proposal bhej dunga.
-Sana: Theek hai. Website ka content update karna hai before Friday — koi lega?
-Rohan: Sana, aap analytics dashboard set up kar sakti ho by Wednesday?
-Sana: Haan, I'll set up the analytics dashboard by Wednesday.
-Rohan: Aur ek demo video bhi banani hai, but abhi owner decide nahi hua.`,
+    text: `Rohan: Chalo shuru karte hain. Main kal tak client ko updated proposal bhej dunga.
+Sana: Perfect. Website ka content refresh karna hai before Friday — but abhi koi owner nahi hai.
+Rohan: Sana, aap Wednesday tak analytics dashboard set up kar sakti ho?
+Sana: Haan, I'll set up the analytics dashboard by Wednesday, no problem.
+Priya: Main design review Thursday ko kar dungi.
+Rohan: Aur ek demo video bhi chahiye launch ke liye, par woh kaun banayega abhi decide nahi hua.`,
+  },
+  {
+    label: "Vague sample (adversarial)",
+    text: `We should probably look into the onboarding flow at some point.
+Someone mentioned the docs feel a little out of date.
+It'd be good to improve test coverage eventually.
+There was some talk about revisiting pricing, but nothing was decided.
+Let's keep the mobile app idea on the radar for now.`,
   },
 ];

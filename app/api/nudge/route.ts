@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { span } from "neatlogs";
 import { draftNudge } from "@/lib/nudge";
 import { flushIfServerless } from "@/lib/flush";
+import { toUserError } from "@/lib/errors";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -42,7 +43,7 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("nudge failed:", err);
     await flushIfServerless();
-    const message = err instanceof Error ? err.message : "Nudge failed.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const { status, message } = toUserError(err);
+    return NextResponse.json({ error: message }, { status });
   }
 }
