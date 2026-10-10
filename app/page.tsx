@@ -51,6 +51,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [activeQuote, setActiveQuote] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState("");
   const markRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -64,6 +65,9 @@ export default function Home() {
     setError(null);
     setTasks(null);
     setActiveQuote(null);
+    // Staged status: the Gemini wait reads as the two real passes happening.
+    setStatus("Reading the transcript…");
+    const toVerify = setTimeout(() => setStatus("Verifying quotes…"), 3500);
     try {
       const res = await fetch("/api/extract", {
         method: "POST",
@@ -76,7 +80,9 @@ export default function Home() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
+      clearTimeout(toVerify);
       setLoading(false);
+      setStatus("");
     }
   }
 
@@ -147,8 +153,13 @@ export default function Home() {
             disabled={loading || transcript.trim().length === 0}
             className="border border-ink bg-ink px-5 py-2.5 text-sm uppercase tracking-wider text-cream transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {loading ? "Extracting…" : "Extract tasks"}
+            {loading ? status || "Working…" : "Extract tasks"}
           </button>
+          {loading && (
+            <span className="ml-3 text-sm italic text-ink-soft">
+              two passes: extract, then verify every quote
+            </span>
+          )}
         </div>
       </section>
 
