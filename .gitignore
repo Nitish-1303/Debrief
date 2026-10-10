@@ -25,3 +25,6 @@ AGENTS.md
 
 # typescript incremental build cache
 *.tsbuildinfo
+
+# local tooling
+.claude
