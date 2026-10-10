@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { span } from "neatlogs";
+import { span, setTraceOutput } from "neatlogs";
 import { extractTasks } from "@/lib/extract";
 import { verifyTasks } from "@/lib/verify";
+import { flushIfServerless } from "@/lib/flush";
 
 // Node runtime: the OpenAI + Neatlogs SDKs need Node APIs (not Edge).
 export const runtime = "nodejs";
@@ -17,7 +18,11 @@ const runWorkflow = span(
   async (transcript: string) => {
     const extracted = await extractTasks(transcript);
     // Second pass: verify each quote verbatim + supports its task.
-    return await verifyTasks(transcript, extracted);
+    const verified = await verifyTasks(transcript, extracted);
+    // Readable trace summary in the dashboard.
+    const ok = verified.filter((t) => t.verified).length;
+    setTraceOutput(`${verified.length} tasks extracted, ${ok} verified`);
+    return verified;
   }
 );
 
@@ -45,9 +50,11 @@ export async function POST(req: Request) {
 
   try {
     const tasks = await runWorkflow(transcript);
+    await flushIfServerless();
     return NextResponse.json({ tasks });
   } catch (err) {
     console.error("extract failed:", err);
+    await flushIfServerless();
     const message = err instanceof Error ? err.message : "Extraction failed.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
